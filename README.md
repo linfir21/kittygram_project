@@ -3,11 +3,11 @@
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```
-git clone https://github.com/yandex-praktikum/kittygram_project.git
+git clone https://github.com/yandex-praktikum/kittygram_project_plus.git
 ```
 
 ```
-cd kittygram_project
+cd kittygram_project_plus
 ```
 
 Cоздать и активировать виртуальное окружение:
@@ -17,7 +17,7 @@ python3 -m venv env
 ```
 
 ```
-source env/Scripts/activate
+source env/bin/activate
 ```
 
 Установить зависимости из файла requirements.txt:

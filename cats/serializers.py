@@ -1,9 +1,32 @@
+# cats/serializers.py
 from rest_framework import serializers
+from .models import Achievement, Cat, Owner, AchievementCat
 
-from .models import Cat
+class AchievementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Achievement
+        fields = ('id', 'name')
 
+class OwnerSerializer(serializers.ModelSerializer):
+    cats = serializers.StringRelatedField(many=True, read_only=True)
+    class Meta:
+        model = Owner
+        fields = ('first_name', 'last_name', 'cats')
 
 class CatSerializer(serializers.ModelSerializer):
+    achievements = AchievementSerializer(many=True, required=False)
+    
     class Meta:
         model = Cat
-        fields = '__all__'
+        fields = ('id', 'name', 'color', 'birth_year', 'owner', 'achievements')
+
+    def create(self, validated_data):
+        if 'achievements' not in self.initial_data:
+            return Cat.objects.create(**validated_data)
+        
+        achievements = validated_data.pop('achievements')
+        cat = Cat.objects.create(**validated_data)
+        for achievement in achievements:
+            current_achievement, _ = Achievement.objects.get_or_create(**achievement)
+            AchievementCat.objects.create(achievement=current_achievement, cat=cat)
+        return cat
